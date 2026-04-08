@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Slider — Análisis CTR · Marzo 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #f0f1f7;
+      color: #1a1a2e;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 12px;
+      padding: 20px 24px;
+      min-width: 900px;
+    }
+
+    .header { margin-bottom: 16px; }
+    .page-title { font-size: 18px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+    .page-subtitle { font-size: 11px; color: #999; margin-top: 4px; }
+    .disclaimer {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #888;
+      background: #fff8e6;
+      border: 1px solid #f0d97a;
+      border-radius: 5px;
+      padding: 3px 9px;
+    }
+
+    .prox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .prox-card {
+      background: #fff;
+      border: 1px solid #e2e4ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .prox-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #e2e4ef;
+    }
+    .ph-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .ph-label { font-size: 11px; font-weight: 700; line-height: 1.4; }
+    .ph-count { margin-left: auto; font-size: 22px; font-weight: 700; }
+
+    .card-ok .prox-card-header { background: #f0faf4; }
+    .card-ok .ph-icon  { background: #d1f0de; color: #1a7a40; }
+    .card-ok .ph-label { color: #1a7a40; }
+    .card-ok .ph-count { color: #1a7a40; }
+
+    .card-mid .prox-card-header { background: #fffbea; }
+    .card-mid .ph-icon  { background: #fff0b0; color: #8a6500; }
+    .card-mid .ph-label { color: #8a6500; }
+    .card-mid .ph-count { color: #8a6500; }
+
+    .card-ko .prox-card-header  { background: #fff4f4; }
+    .card-ko .ph-icon  { background: #ffd6d6; color: #b00020; }
+    .card-ko .ph-label { color: #b00020; }
+    .card-ko .ph-count { color: #b00020; }
+
+    .prox-list { list-style: none; padding: 4px 0; }
+    .prox-list li {
+      display: flex; align-items: center;
+      padding: 5px 14px; border-bottom: 1px solid #f3f4f8; gap: 6px;
+    }
+    .prox-list li:last-child { border-bottom: none; }
+    .prox-name { flex: 1; font-size: 10.5px; color: #333; font-weight: 500; }
+    .prox-ctr  { font-size: 10.5px; font-weight: 700; color: #555; min-width: 36px; text-align: right; }
+    .prox-uplift {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 4px;
+      min-width: 48px; text-align: center;
+    }
+    .uplift-pos { background: #e6f7ee; color: #1a7a40; }
+    .uplift-neu { background: #f3f4f8; color: #888; }
+    .uplift-neg { background: #fff0f0; color: #b00020; }
+
+    .card-footer {
+      font-size: 10px; color: #999;
+      padding: 6px 14px; background: #fafafa;
+      border-top: 1px solid #f0f1f7;
+    }
+
+    /* Insights */
+    .insights-card {
+      margin-top: 14px; background: #fff;
+      border: 1px solid #e2e4ef; border-radius: 8px; overflow: hidden;
+    }
+    .insights-header {
+      padding: 10px 16px; border-bottom: 1px solid #e2e4ef;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .insights-header .ih-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: #eef0fb; display: flex; align-items: center;
+      justify-content: center; font-size: 14px;
+    }
+    .insights-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .insight-block {
+      padding: 12px 16px;
+      border-right: 1px solid #f0f1f7;
+      border-bottom: 1px solid #f0f1f7;
+    }
+    .insight-block:nth-child(2n) { border-right: none; }
+    .insight-block:nth-last-child(-n+2) { border-bottom: none; }
+    .insight-title { font-size: 10px; font-weight: 700; color: #1a1a2e; margin-bottom: 5px; }
+    .insight-body  { font-size: 10px; color: #555; line-height: 1.6; }
+    .insight-body em { color: #888; font-style: normal; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="page-title">Main Slider — CTR vs Target · Marzo 2026</div>
+    <div class="page-subtitle">Target CTR: 0,42% &nbsp;·&nbsp; 40 activaciones &nbsp;·&nbsp; Uplift: órdenes del día vs promedio mensual de la marca</div>
+    <div class="disclaimer">⚠️ Las órdenes son a nivel marca total (ML + MP) — no son atribuibles exclusivamente al Main Slider</div>
+  </div>
+
+  <div class="prox-grid">
+
+    <!-- ── CARD 1: Por arriba del target ── -->
+    <div class="prox-card card-ok">
+      <div class="prox-card-header">
+        <div class="ph-icon">✓</div>
+        <div class="ph-label">Por arriba del target<br><span style="font-weight:400;font-size:10px;">CTR ≥ 0,42%</span></div>
+        <div class="ph-count">19</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">MOSTAZA 14/3</span>    <span class="prox-ctr">0,63%</span><span class="prox-uplift uplift-pos">+58%</span></li>
+        <li><span class="prox-name">KFC 12/3</span>        <span class="prox-ctr">0,60%</span><span class="prox-uplift uplift-pos">+41%</span></li>
+        <li><span class="prox-name">GRIDO 14/3</span>      <span class="prox-ctr">0,57%</span><span class="prox-uplift uplift-pos">+120%</span></li>
+        <li><span class="prox-name">MC 27/3</span>         <span class="prox-ctr">0,55%</span><span class="prox-uplift uplift-pos">+47%</span></li>
+        <li><span class="prox-name">GRIDO 15/3</span>      <span class="prox-ctr">0,52%</span><span class="prox-uplift uplift-pos">+173%</span></li>
+        <li><span class="prox-name">SUSHIPOP 20/3</span>   <span class="prox-ctr">0,51%</span><span class="prox-uplift uplift-pos">+59%</span></li>
+        <li><span class="prox-name">KFC 1/3</span>         <span class="prox-ctr">0,50%</span><span class="prox-uplift uplift-pos">+38%</span></li>
+        <li><span class="prox-name">SUSHIPOP 21/3</span>   <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+102%</span></li>
+        <li><span class="prox-name">SUSHIPOP 22/3</span>   <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+73%</span></li>
+        <li><span class="prox-name">SUSHIPOP 23/3</span>   <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+30%</span></li>
+        <li><span class="prox-name">SUSHIPOP 27/3</span>   <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+30%</span></li>
+        <li><span class="prox-name">ELDESEMBARCO 8/3</span><span class="prox-ctr">0,48%</span><span class="prox-uplift uplift-pos">+60%</span></li>
+        <li><span class="prox-name">KFC 8/3</span>         <span class="prox-ctr">0,48%</span><span class="prox-uplift uplift-pos">+92%</span></li>
+        <li><span class="prox-name">MOSTAZA 13/3</span>    <span class="prox-ctr">0,48%</span><span class="prox-uplift uplift-pos">+82%</span></li>
+        <li><span class="prox-name">MC 28/3</span>         <span class="prox-ctr">0,46%</span><span class="prox-uplift uplift-pos">+54%</span></li>
+        <li><span class="prox-name">SUSHIPOP 29/3</span>   <span class="prox-ctr">0,45%</span><span class="prox-uplift uplift-pos">+20%</span></li>
+        <li><span class="prox-name">BK 12/3</span>         <span class="prox-ctr">0,44%</span><span class="prox-uplift uplift-pos">+45%</span></li>
+        <li><span class="prox-name">MOSTAZA 6/3</span>     <span class="prox-ctr">0,43%</span><span class="prox-uplift uplift-pos">+86%</span></li>
+        <li><span class="prox-name">MOSTAZA 7/3 ↓</span>  <span class="prox-ctr">0,41%</span><span class="prox-uplift uplift-pos">+62%</span></li>
+      </ul>
+      <div class="card-footer">↓ MOSTAZA 7/3 por debajo de target pero en día consecutivo a 6/3</div>
+    </div>
+
+    <!-- ── CARD 2: Bajo target, con uplift positivo ── -->
+    <div class="prox-card card-mid">
+      <div class="prox-card-header">
+        <div class="ph-icon">↑</div>
+        <div class="ph-label">Bajo target · con uplift<br><span style="font-weight:400;font-size:10px;">CTR &lt; 0,42% · uplift &gt; 0%</span></div>
+        <div class="ph-count">14</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">BK 4/3</span>          <span class="prox-ctr">0,35%</span><span class="prox-uplift uplift-pos">+111%</span></li>
+        <li><span class="prox-name">BK 5/3</span>          <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-pos">+80%</span></li>
+        <li><span class="prox-name">BK 11/3</span>         <span class="prox-ctr">0,34%</span><span class="prox-uplift uplift-pos">+66%</span></li>
+        <li><span class="prox-name">GRIDO 5/3</span>       <span class="prox-ctr">0,32%</span><span class="prox-uplift uplift-pos">+60%</span></li>
+        <li><span class="prox-name">BK 31/3</span>         <span class="prox-ctr">0,30%</span><span class="prox-uplift uplift-pos">+61%</span></li>
+        <li><span class="prox-name">GRIDO 6/3</span>       <span class="prox-ctr">0,37%</span><span class="prox-uplift uplift-pos">+40%</span></li>
+        <li><span class="prox-name">DD 26/3</span>         <span class="prox-ctr">0,38%</span><span class="prox-uplift uplift-pos">+32%</span></li>
+        <li><span class="prox-name">BK 30/3</span>         <span class="prox-ctr">0,34%</span><span class="prox-uplift uplift-pos">+29%</span></li>
+        <li><span class="prox-name">MC 3/3</span>          <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-pos">+25%</span></li>
+        <li><span class="prox-name">MC 10/3</span>         <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-pos">+23%</span></li>
+        <li><span class="prox-name">MC 19/3</span>         <span class="prox-ctr">0,35%</span><span class="prox-uplift uplift-neg">+4%</span></li>
+        <li><span class="prox-name">SUSHIPOP 24/3</span>   <span class="prox-ctr">0,41%</span><span class="prox-uplift uplift-neg">+5%</span></li>
+        <li><span class="prox-name">DD 9/3</span>          <span class="prox-ctr">0,28%</span><span class="prox-uplift uplift-neg">+5%</span></li>
+        <li><span class="prox-name">BK 6/3</span>          <span class="prox-ctr">0,24%</span><span class="prox-uplift uplift-neg">+2%</span></li>
+      </ul>
+      <div class="card-footer">En rojo: uplift &lt; 10% — impacto marginal en órdenes de marca</div>
+    </div>
+
+    <!-- ── CARD 3: Bajo target, sin uplift ── -->
+    <div class="prox-card card-ko">
+      <div class="prox-card-header">
+        <div class="ph-icon">✗</div>
+        <div class="ph-label">Bajo target · sin uplift<br><span style="font-weight:400;font-size:10px;">CTR &lt; 0,42% · uplift ≤ 0%</span></div>
+        <div class="ph-count">6</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">MC 25/3</span>         <span class="prox-ctr">0,27%</span><span class="prox-uplift uplift-neg">−41%</span></li>
+        <li><span class="prox-name">SUSHIPOP 17/3</span>   <span class="prox-ctr">0,34%</span><span class="prox-uplift uplift-neg">−30%</span></li>
+        <li><span class="prox-name">MC 17/3</span>         <span class="prox-ctr">0,33%</span><span class="prox-uplift uplift-neg">−13%</span></li>
+        <li><span class="prox-name">MC 18/3</span>         <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-neg">−13%</span></li>
+        <li><span class="prox-name">PEDICOMIDA 2/3</span>  <span class="prox-ctr">0,29%</span><span class="prox-uplift uplift-neu">s/d</span></li>
+        <li><span class="prox-name">PEDICOMIDA 16/3</span> <span class="prox-ctr">0,31%</span><span class="prox-uplift uplift-neu">s/d</span></li>
+      </ul>
+      <div class="card-footer">PEDICOMIDA sin baseline de órdenes disponible</div>
+    </div>
+
+  </div>
+
+  <!-- ── Insights ── -->
+  <div class="insights-card">
+    <div class="insights-header">
+      <div class="ih-icon">💡</div>
+      <span style="font-size:11px;font-weight:700;color:#1a1a2e;">Observaciones</span>
+      <span style="font-size:10px;color:#999;margin-left:6px;">Uplift vs promedio mensual de órdenes de la marca — incluye todos los canales ML + MP</span>
+    </div>
+    <div class="insights-grid">
+
+      <div class="insight-block">
+        <div class="insight-title">📉 Fatiga por días consecutivos</div>
+        <div class="insight-body">
+          Cuando una marca repite sin pausa el impacto en órdenes cae sostenidamente.
+          BK: 4/3 <strong>+111%</strong> → 5/3 +80% → 6/3 <strong>+2%</strong>.
+          SUSHIPOP: peak el 2do día (+102%), luego cae hasta +5% en el 5to.
+          GRIDO: 5/3 +60% → 6/3 +40%. <em>Sugerencia: espaciar activaciones para mantener el efecto.</em>
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">🔄 El descanso recarga el efecto</div>
+        <div class="insight-body">
+          GRIDO activó los días 5–6/3 con uplift moderado (+60%, +40%). Al volver el 14–15/3 con una semana de pausa el resultado fue notablemente mejor:
+          <strong>+120% y +173%</strong>. El "reseteo" de la audiencia parece ser clave para recuperar el impacto.
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">📊 CTR bajo target no implica bajo impacto en órdenes</div>
+        <div class="insight-body">
+          Algunas de las activaciones con mejor uplift están por debajo de 0,42% de CTR: BK 4/3 (0,35% → <strong>+111%</strong>), BK 5/3 (0,36% → +80%), BK 31/3 (0,30% → +61%).
+          La visibilidad puede generar intención de compra incluso sin click directo al slider.
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">⚠️ MC: sensible al contexto y a la repetición</div>
+        <div class="insight-body">
+          En días aislados MC rinde bien (3/3: +25%, 10/3: +23%, 27/3: +47%, 28/3: +54%).
+          Pero en el bloque 17–19/3 arranca en <strong>−13%</strong> y apenas recupera.
+          El 25/3 cierra en <strong>−41%</strong> — el peor registro del mes.
+          La marca necesita mayor separación entre activaciones para sostener el efecto.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

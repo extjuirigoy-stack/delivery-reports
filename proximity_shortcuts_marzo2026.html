@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proximity Shortcuts — Análisis CTR · Marzo 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #f0f1f7;
+      color: #1a1a2e;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 12px;
+      padding: 20px 24px;
+      min-width: 900px;
+    }
+
+    .header { margin-bottom: 16px; }
+    .page-title { font-size: 18px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+    .page-subtitle { font-size: 11px; color: #999; margin-top: 4px; }
+    .disclaimer {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #888;
+      background: #fff8e6;
+      border: 1px solid #f0d97a;
+      border-radius: 5px;
+      padding: 3px 9px;
+    }
+
+    .prox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .prox-card {
+      background: #fff;
+      border: 1px solid #e2e4ef;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .prox-card-header {
+      display: flex; align-items: center;
+      gap: 8px; padding: 10px 14px;
+      border-bottom: 1px solid #e2e4ef;
+    }
+    .ph-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .ph-label { font-size: 11px; font-weight: 700; line-height: 1.4; }
+    .ph-count { margin-left: auto; font-size: 22px; font-weight: 700; }
+
+    .card-ok .prox-card-header { background: #f0faf4; }
+    .card-ok .ph-icon  { background: #d1f0de; color: #1a7a40; }
+    .card-ok .ph-label { color: #1a7a40; }
+    .card-ok .ph-count { color: #1a7a40; }
+
+    .card-mid .prox-card-header { background: #fffbea; }
+    .card-mid .ph-icon  { background: #fff0b0; color: #8a6500; }
+    .card-mid .ph-label { color: #8a6500; }
+    .card-mid .ph-count { color: #8a6500; }
+
+    .card-ko .prox-card-header  { background: #fff4f4; }
+    .card-ko .ph-icon  { background: #ffd6d6; color: #b00020; }
+    .card-ko .ph-label { color: #b00020; }
+    .card-ko .ph-count { color: #b00020; }
+
+    .prox-list { list-style: none; padding: 4px 0; }
+    .prox-list li {
+      display: flex; align-items: center;
+      padding: 5px 14px; border-bottom: 1px solid #f3f4f8; gap: 6px;
+    }
+    .prox-list li:last-child { border-bottom: none; }
+    .prox-name { flex: 1; font-size: 10.5px; color: #333; font-weight: 500; }
+    .prox-ctr  { font-size: 10.5px; font-weight: 700; color: #555; min-width: 36px; text-align: right; }
+    .prox-uplift {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 4px;
+      min-width: 48px; text-align: center;
+    }
+    .uplift-pos { background: #e6f7ee; color: #1a7a40; }
+    .uplift-neu { background: #f3f4f8; color: #888; }
+    .uplift-neg { background: #fff0f0; color: #b00020; }
+
+    .card-footer {
+      font-size: 10px; color: #999;
+      padding: 6px 14px; background: #fafafa;
+      border-top: 1px solid #f0f1f7;
+    }
+
+    /* Insights */
+    .insights-card {
+      margin-top: 14px; background: #fff;
+      border: 1px solid #e2e4ef; border-radius: 8px; overflow: hidden;
+    }
+    .insights-header {
+      padding: 10px 16px; border-bottom: 1px solid #e2e4ef;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .insights-header .ih-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: #eef0fb; display: flex; align-items: center;
+      justify-content: center; font-size: 14px;
+    }
+    .insights-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .insight-block {
+      padding: 12px 16px;
+      border-right: 1px solid #f0f1f7;
+      border-bottom: 1px solid #f0f1f7;
+    }
+    .insight-block:nth-child(2n) { border-right: none; }
+    .insight-block:nth-last-child(-n+2) { border-bottom: none; }
+    .insight-title { font-size: 10px; font-weight: 700; color: #1a1a2e; margin-bottom: 5px; }
+    .insight-body  { font-size: 10px; color: #555; line-height: 1.6; }
+    .insight-body em { color: #888; font-style: normal; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="page-title">Proximity Shortcuts — CTR vs Target · Marzo 2026</div>
+    <div class="page-subtitle">Target CTR: 0,40% &nbsp;·&nbsp; 39 activaciones &nbsp;·&nbsp; Uplift: órdenes del día vs promedio mensual de la marca</div>
+    <div class="disclaimer">⚠️ Las órdenes son a nivel marca total (ML + MP) — no son atribuibles exclusivamente al Shortcut</div>
+  </div>
+
+  <div class="prox-grid">
+
+    <!-- ── CARD 1: Por arriba del target ── -->
+    <div class="prox-card card-ok">
+      <div class="prox-card-header">
+        <div class="ph-icon">✓</div>
+        <div class="ph-label">Por arriba del target<br><span style="font-weight:400;font-size:10px;">CTR ≥ 0,40%</span></div>
+        <div class="ph-count">20</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">TALOCO 13/3</span>        <span class="prox-ctr">0,61%</span><span class="prox-uplift uplift-neg">−20%</span></li>
+        <li><span class="prox-name">DANIEL 6/3</span>         <span class="prox-ctr">0,60%</span><span class="prox-uplift uplift-pos">+198%</span></li>
+        <li><span class="prox-name">DANIEL 24/3</span>        <span class="prox-ctr">0,56%</span><span class="prox-uplift uplift-pos">+22%</span></li>
+        <li><span class="prox-name">KFC 28/3-II</span>        <span class="prox-ctr">0,52%</span><span class="prox-uplift uplift-pos">+51%</span></li>
+        <li><span class="prox-name">MOSTAZA 13/3</span>       <span class="prox-ctr">0,50%</span><span class="prox-uplift uplift-pos">+82%</span></li>
+        <li><span class="prox-name">DD 26/3</span>            <span class="prox-ctr">0,50%</span><span class="prox-uplift uplift-pos">+32%</span></li>
+        <li><span class="prox-name">GRIDO 8/3</span>          <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+118%</span></li>
+        <li><span class="prox-name">FARICCI 15/3</span>       <span class="prox-ctr">0,49%</span><span class="prox-uplift uplift-pos">+50%</span></li>
+        <li><span class="prox-name">SUSHIPOP 19/3</span>      <span class="prox-ctr">0,48%</span><span class="prox-uplift uplift-neg">+2%</span></li>
+        <li><span class="prox-name">MC 3/3</span>             <span class="prox-ctr">0,47%</span><span class="prox-uplift uplift-pos">+25%</span></li>
+        <li><span class="prox-name">KFC 28/3-2r</span>        <span class="prox-ctr">0,47%</span><span class="prox-uplift uplift-pos">+51%</span></li>
+        <li><span class="prox-name">BK 31/3</span>            <span class="prox-ctr">0,47%</span><span class="prox-uplift uplift-pos">+61%</span></li>
+        <li><span class="prox-name">GRIDO 17/3</span>         <span class="prox-ctr">0,47%</span><span class="prox-uplift uplift-neg">+6%</span></li>
+        <li><span class="prox-name">ELDESEMBARCO 29/3</span>  <span class="prox-ctr">0,45%</span><span class="prox-uplift uplift-pos">+135%</span></li>
+        <li><span class="prox-name">MC 10/3</span>            <span class="prox-ctr">0,45%</span><span class="prox-uplift uplift-pos">+23%</span></li>
+        <li><span class="prox-name">SUSHIPOP 27/3</span>      <span class="prox-ctr">0,43%</span><span class="prox-uplift uplift-pos">+30%</span></li>
+        <li><span class="prox-name">BK 16/3</span>            <span class="prox-ctr">0,43%</span><span class="prox-uplift uplift-neg">−4%</span></li>
+        <li><span class="prox-name">MONKS 15/3</span>         <span class="prox-ctr">0,43%</span><span class="prox-uplift uplift-pos">+448%</span></li>
+        <li><span class="prox-name">MC 19/3</span>            <span class="prox-ctr">0,42%</span><span class="prox-uplift uplift-neg">+4%</span></li>
+        <li><span class="prox-name">TENTO 10/3</span>         <span class="prox-ctr">0,41%</span><span class="prox-uplift uplift-neg">−9%</span></li>
+      </ul>
+      <div class="card-footer">En rojo: uplift negativo o &lt; 10% — CTR ok pero bajo impacto en órdenes de marca</div>
+    </div>
+
+    <!-- ── CARD 2: Bajo target, con uplift positivo ── -->
+    <div class="prox-card card-mid">
+      <div class="prox-card-header">
+        <div class="ph-icon">↑</div>
+        <div class="ph-label">Bajo target · con uplift<br><span style="font-weight:400;font-size:10px;">CTR &lt; 0,40% · uplift &gt; 0%</span></div>
+        <div class="ph-count">11</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">ANTICO 9/3</span>         <span class="prox-ctr">0,30%</span><span class="prox-uplift uplift-pos">+521%</span></li>
+        <li><span class="prox-name">CASERATTO 10/3</span>     <span class="prox-ctr">0,33%</span><span class="prox-uplift uplift-pos">+127%</span></li>
+        <li><span class="prox-name">BK 4/3</span>             <span class="prox-ctr">0,24%</span><span class="prox-uplift uplift-pos">+111%</span></li>
+        <li><span class="prox-name">ELDESEMBARCO 11/3</span>  <span class="prox-ctr">0,38%</span><span class="prox-uplift uplift-pos">+95%</span></li>
+        <li><span class="prox-name">DESY 2/3</span>           <span class="prox-ctr">0,31%</span><span class="prox-uplift uplift-pos">+72%</span></li>
+        <li><span class="prox-name">ROSES 13/3</span>         <span class="prox-ctr">0,32%</span><span class="prox-uplift uplift-pos">+54%</span></li>
+        <li><span class="prox-name">MC 27/3</span>            <span class="prox-ctr">0,33%</span><span class="prox-uplift uplift-pos">+47%</span></li>
+        <li><span class="prox-name">DD 7/3</span>             <span class="prox-ctr">0,38%</span><span class="prox-uplift uplift-pos">+45%</span></li>
+        <li><span class="prox-name">DD 2/3</span>             <span class="prox-ctr">0,33%</span><span class="prox-uplift uplift-pos">+28%</span></li>
+        <li><span class="prox-name">DANIEL 24/3 (2403)</span> <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-pos">+22%</span></li>
+        <li><span class="prox-name">KENTUCKY 23/3</span>      <span class="prox-ctr">0,27%</span><span class="prox-uplift uplift-pos">+19%</span></li>
+      </ul>
+      <div class="card-footer">CTR bajo target pero generaron uplift en órdenes de marca</div>
+    </div>
+
+    <!-- ── CARD 3: Bajo target, sin uplift ── -->
+    <div class="prox-card card-ko">
+      <div class="prox-card-header">
+        <div class="ph-icon">✗</div>
+        <div class="ph-label">Bajo target · sin uplift<br><span style="font-weight:400;font-size:10px;">CTR &lt; 0,40% · uplift ≤ 0%</span></div>
+        <div class="ph-count">8</div>
+      </div>
+      <ul class="prox-list">
+        <li><span class="prox-name">KENTUCKY 10/3</span>      <span class="prox-ctr">0,20%</span><span class="prox-uplift uplift-neg">−56%</span></li>
+        <li><span class="prox-name">MONKS 24/3</span>         <span class="prox-ctr">0,37%</span><span class="prox-uplift uplift-neg">−48%</span></li>
+        <li><span class="prox-name">PIZZERIA POPULAR 23/3</span><span class="prox-ctr">0,26%</span><span class="prox-uplift uplift-neg">−43%</span></li>
+        <li><span class="prox-name">ROSES 6/3</span>          <span class="prox-ctr">0,35%</span><span class="prox-uplift uplift-neg">−46%</span></li>
+        <li><span class="prox-name">MARIACHI 28/3</span>      <span class="prox-ctr">0,38%</span><span class="prox-uplift uplift-neg">−33%</span></li>
+        <li><span class="prox-name">RAPIDO SABROSO 5/3</span> <span class="prox-ctr">0,27%</span><span class="prox-uplift uplift-neg">−28%</span></li>
+        <li><span class="prox-name">BK 23/3</span>            <span class="prox-ctr">0,36%</span><span class="prox-uplift uplift-neg">−25%</span></li>
+        <li><span class="prox-name">RAPIDO SABROSO 9/3</span> <span class="prox-ctr">0,39%</span><span class="prox-uplift uplift-neg">−1%</span></li>
+      </ul>
+      <div class="card-footer">CTR bajo target y sin uplift en órdenes de marca</div>
+    </div>
+
+  </div>
+
+  <!-- ── Insights ── -->
+  <div class="insights-card">
+    <div class="insights-header">
+      <div class="ih-icon">💡</div>
+      <span style="font-size:11px;font-weight:700;color:#1a1a2e;">Observaciones</span>
+      <span style="font-size:10px;color:#999;margin-left:6px;">Uplift vs promedio mensual de órdenes de la marca — incluye todos los canales ML + MP</span>
+    </div>
+    <div class="insights-grid">
+
+      <div class="insight-block">
+        <div class="insight-title">📊 CTR alto no garantiza impacto en órdenes de marca</div>
+        <div class="insight-body">
+          TALOCO tiene el mejor CTR del mes (0,61%) pero registra −20% en órdenes de marca.
+          SUSHIPOP 19/3 y GRIDO 17/3 también están por arriba del target pero con uplift &lt;10%.
+          El click en el shortcut no siempre se traduce en mayor actividad de compra de la marca ese día.
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">📉 Fatiga entre activaciones de la misma marca</div>
+        <div class="insight-body">
+          GRIDO activó el 8/3 con +118% de uplift en órdenes. Al volver el 17/3 — solo 9 días después —
+          el uplift cayó a +6%. MONKS muestra el caso más extremo: 15/3 +448% y 24/3 −48%.
+          <em>La separación entre activaciones es clave para mantener el efecto.</em>
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">💥 Volumen de prints compensa CTR bajo</div>
+        <div class="insight-body">
+          BK 4/3 tiene el CTR más bajo de su grupo (0,24%) pero genera +111% de uplift en órdenes,
+          apoyado en 17M de prints — el mayor volumen individual del mes.
+          La exposición masiva puede generar impacto de marca incluso sin alta tasa de click.
+        </div>
+      </div>
+
+      <div class="insight-block">
+        <div class="insight-title">⚠️ Marcas chicas: resultado muy variable</div>
+        <div class="insight-body">
+          ANTICO (+521%), CASERATTO (+127%) y MONKS 15/3 (+448%) muestran uplifts altísimos,
+          pero con volúmenes bajos (&lt;400K prints) y promedios pequeños de órdenes base —
+          cualquier variación diaria infla el porcentaje. Leer en términos absolutos además del %.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
