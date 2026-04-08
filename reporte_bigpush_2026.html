@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Big Push 2026 — Delivery MLA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f0f1f7;
+            color: #1a1a2e;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            padding: 20px 24px;
+            min-width: 1100px;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .header-left { display: flex; flex-direction: column; gap: 7px; }
+        .page-title { font-size: 18px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+        .page-title .bp { color: #e8a800; }
+        .refs { display: flex; gap: 14px; align-items: center; }
+        .ref-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .dot-bp26 { background: #f5c800; }
+        .dot-lm   { background: #4f6af5; }
+        .dot-bp25 { background: #aaa; }
+        .refs-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+        .header-right { font-size: 11px; color: #999; text-align: right; line-height: 1.7; }
+
+        /* ── KPI Cards ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .kpi {
+            background: #fff;
+            border: 1px solid #e2e4ef;
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .kpi-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
+        .kpi-value { font-size: 30px; font-weight: 800; color: #1a1a2e; line-height: 1; margin-bottom: 9px; }
+        .kpi-deltas { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .badge.up   { background: rgba(22, 163, 74, 0.1); color: #16a34a; }
+        .badge.dn   { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+        .badge-lbl  { font-size: 10px; color: #bbb; }
+
+        /* ── Charts ── */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .chart-card {
+            background: #fff;
+            border: 1px solid #e2e4ef;
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .chart-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; }
+        .chart-legend { display: flex; gap: 10px; }
+        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #999; }
+        .legend-sq { width: 8px; height: 8px; border-radius: 2px; }
+        .chart-wrap { height: 130px; }
+
+        /* ── Tables ── */
+        .tables-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .tbl-card {
+            background: #fff;
+            border: 1px solid #e2e4ef;
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .tbl-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #bbb;
+            padding: 3px 5px 7px;
+            border-bottom: 1px solid #eaecf5;
+            text-align: right;
+            white-space: nowrap;
+        }
+        thead th:first-child  { text-align: left; }
+        thead th:nth-child(2) { text-align: center; }
+
+        .tbadge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; }
+        .tbadge.up { background: rgba(22,163,74,0.1); color: #16a34a; }
+        .tbadge.dn { background: rgba(220,38,38,0.1); color: #dc2626; }
+        .sd { color: #ccc; font-style: italic; }
+
+        .svc-name {
+            vertical-align: middle;
+            padding: 4px 8px 4px 0;
+            border: none;
+            width: 90px;
+        }
+        .svc-box {
+            background: #f1f2f6;
+            color: #555;
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px 8px;
+            line-height: 1.4;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metric-name {
+            font-size: 10px;
+            color: #aaa;
+            text-align: center;
+            padding: 4px 8px;
+            white-space: nowrap;
+        }
+        .metric-name.top { padding-top: 10px; }
+        .metric-name.bot { padding-bottom: 10px; border-bottom: 1px solid #eaecf5; }
+
+        .data-val {
+            font-size: 11px;
+            color: #222;
+            text-align: right;
+            padding: 4px 5px;
+            white-space: nowrap;
+        }
+        .data-val.top { padding-top: 10px; }
+        .data-val.bot { padding-bottom: 10px; border-bottom: 1px solid #eaecf5; }
+
+        .delta-val {
+            text-align: right;
+            padding: 4px 5px;
+            white-space: nowrap;
+        }
+        .delta-val.top { padding-top: 10px; }
+        .delta-val.bot { padding-bottom: 10px; border-bottom: 1px solid #eaecf5; }
+    </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+    <div class="header-left">
+        <div class="page-title">Performance <span class="bp">Big Push 2026</span> — Delivery MLA</div>
+        <div class="refs">
+            <span class="refs-label">Referencias:</span>
+            <span class="ref-item"><span class="dot dot-bp26"></span> BP 2026 (campaña actual)</span>
+            <span class="ref-item"><span class="dot dot-lm"></span>   LM – feb/mar 2026 (16/2–8/3)</span>
+            <span class="ref-item"><span class="dot dot-bp25"></span> BP 2025 – nov/dic 2025 (12/11–2/12)</span>
+        </div>
+    </div>
+    <div class="header-right">
+        Datos al 5/4 &nbsp;·&nbsp; Campaña 16/3 – 5/4<br>
+        21 días
+    </div>
+</div>
+
+<!-- ── KPI Cards ── -->
+<div class="kpi-row">
+    <div class="kpi">
+        <div class="kpi-label">Prints totales</div>
+        <div class="kpi-value">160,5M</div>
+        <div class="kpi-deltas">
+            <span class="badge up">↑ 61,5%</span><span class="badge-lbl">YoY</span>
+            <span class="badge up">↑ 30,9%</span><span class="badge-lbl">vs LM</span>
+        </div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Total Órdenes</div>
+        <div class="kpi-value">708.811</div>
+        <div class="kpi-deltas">
+            <span class="badge up">↑ 11,4%</span><span class="badge-lbl">YoY</span>
+            <span class="badge up">↑ 0,8%</span><span class="badge-lbl">vs LM</span>
+        </div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Sesiones totales</div>
+        <div class="kpi-value">5,38M</div>
+        <div class="kpi-deltas">
+            <span class="badge up">↑ 13,2%</span><span class="badge-lbl">YoY</span>
+            <span class="badge up">↑ 4,1%</span><span class="badge-lbl">vs LM</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── Charts ── -->
+<div class="charts-row">
+    <div class="chart-card">
+        <div class="chart-header">
+            <div class="chart-title">Evolución campaña — Prints por semana</div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-sq" style="background:#FFD700"></span>BP 2026</span>
+                <span class="legend-item"><span class="legend-sq" style="background:#6b7aff"></span>LM</span>
+                <span class="legend-item"><span class="legend-sq" style="background:#666"></span>BP 2025</span>
+            </div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartPrints"></canvas></div>
+    </div>
+    <div class="chart-card">
+        <div class="chart-header">
+            <div class="chart-title">Evolución órdenes — Órdenes por semana</div>
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-sq" style="background:#FFD700"></span>BP 2026</span>
+                <span class="legend-item"><span class="legend-sq" style="background:#6b7aff"></span>LM</span>
+                <span class="legend-item"><span class="legend-sq" style="background:#666"></span>BP 2025</span>
+            </div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartOrders"></canvas></div>
+    </div>
+</div>
+
+<!-- ── Tables ── -->
+<div class="tables-row">
+
+    <!-- MERCADO LIBRE -->
+    <div class="tbl-card">
+        <div class="tbl-section-title">
+            <span style="color:#4f9cf9;font-size:14px">◆</span> Mercado Libre — por servicio
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Espacio</th>
+                    <th>Métrica</th>
+                    <th>BP 2026</th>
+                    <th>vs BP25</th>
+                    <th>vs LM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Main Slider -->
+                <tr>
+                    <td class="svc-name first" rowspan="3"><div class="svc-box">Main Slider</div></td>
+                    <td class="metric-name top">Prints</td>
+                    <td class="data-val top">55,0M</td>
+                    <td class="delta-val top"><span class="tbadge up">+2,4%</span></td>
+                    <td class="delta-val top"><span class="tbadge dn">-5,4%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CTR</td>
+                    <td class="data-val">0,39%</td>
+                    <td class="delta-val"><span class="tbadge up">+0,02pp</span></td>
+                    <td class="delta-val"><span class="tbadge up">+0,06pp</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name bot">Órdenes</td>
+                    <td class="data-val bot">30.745</td>
+                    <td class="delta-val bot"><span class="tbadge up">+46,6%</span></td>
+                    <td class="delta-val bot"><span class="tbadge up">+35,4%</span></td>
+                </tr>
+                <!-- Placement Personalization -->
+                <tr>
+                    <td class="svc-name" rowspan="3"><div class="svc-box">Placement Person.</div></td>
+                    <td class="metric-name top">Prints</td>
+                    <td class="data-val top">16,0M</td>
+                    <td class="delta-val top"><span class="tbadge up">+67,2%</span></td>
+                    <td class="delta-val top"><span class="tbadge up">+173,7%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CTR</td>
+                    <td class="data-val">0,31%</td>
+                    <td class="delta-val"><span class="tbadge dn">-0,09pp</span></td>
+                    <td class="delta-val"><span class="tbadge dn">-0,02pp</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name bot">Órdenes</td>
+                    <td class="data-val bot"><span class="sd">s/d</span></td>
+                    <td class="delta-val bot">—</td>
+                    <td class="delta-val bot">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MERCADO PAGO -->
+    <div class="tbl-card">
+        <div class="tbl-section-title">
+            <span style="color:#00d4aa;font-size:14px">◆</span> Mercado Pago — por servicio
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Espacio</th>
+                    <th>Métrica</th>
+                    <th>BP 2026</th>
+                    <th>vs BP25</th>
+                    <th>vs LM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Shortcut -->
+                <tr>
+                    <td class="svc-name first" rowspan="3"><div class="svc-box">Shortcut</div></td>
+                    <td class="metric-name top">Prints</td>
+                    <td class="data-val top">70,0M</td>
+                    <td class="delta-val top"><span class="tbadge up">+119,9%</span></td>
+                    <td class="delta-val top"><span class="tbadge up">+51,9%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CTR</td>
+                    <td class="data-val">0,40%</td>
+                    <td class="delta-val"><span class="tbadge dn">-0,15pp</span></td>
+                    <td class="delta-val"><span class="tbadge dn">-0,02pp</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name bot">Órdenes</td>
+                    <td class="data-val bot">7.537</td>
+                    <td class="delta-val bot"><span class="tbadge dn">-68,3%</span></td>
+                    <td class="delta-val bot"><span class="tbadge dn">-14,1%</span></td>
+                </tr>
+                <!-- Xsell -->
+                <tr>
+                    <td class="svc-name" rowspan="3"><div class="svc-box">Xsell</div></td>
+                    <td class="metric-name top">Prints</td>
+                    <td class="data-val top">19,5M</td>
+                    <td class="delta-val top"><span class="tbadge up">+380,0%</span></td>
+                    <td class="delta-val top"><span class="tbadge up">+59,0%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CTR</td>
+                    <td class="data-val">0,15%</td>
+                    <td class="delta-val"><span class="tbadge dn">-0,09pp</span></td>
+                    <td class="delta-val"><span class="tbadge dn">-0,01pp</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name bot">Órdenes</td>
+                    <td class="data-val bot">1.577</td>
+                    <td class="delta-val bot"><span class="tbadge dn">-2,7%</span></td>
+                    <td class="delta-val bot"><span class="tbadge dn">-14,3%</span></td>
+                </tr>
+                <!-- MS Hub Beneficios -->
+                <tr>
+                    <td class="svc-name" rowspan="3"><div class="svc-box">MS Hub Benef.</div></td>
+                    <td class="metric-name top">Prints</td>
+                    <td class="data-val top">68.568</td>
+                    <td class="delta-val top"><span class="tbadge dn">-68,7%</span></td>
+                    <td class="delta-val top"><span class="tbadge dn">-77,6%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">CTR</td>
+                    <td class="data-val">25,28%</td>
+                    <td class="delta-val"><span class="tbadge up">+15,87pp</span></td>
+                    <td class="delta-val"><span class="tbadge up">+0,60pp</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name bot">Órdenes</td>
+                    <td class="data-val bot"><span class="sd">s/d</span></td>
+                    <td class="delta-val bot">—</td>
+                    <td class="delta-val bot">—</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+Chart.register(ChartDataLabels);
+
+const fmtPrints = v => v >= 1 ? `${v.toFixed(1).replace('.', ',')}M` : `${(v * 1000).toFixed(0)}K`;
+const fmtOrders = v => v >= 1000000 ? `${(v/1000000).toFixed(1).replace('.', ',')}M` : `${(v/1000).toFixed(0)}K`;
+
+const datalabelsBase = (fmtFn) => ({
+    anchor: 'end',
+    align: 'top',
+    font: { size: 8, weight: '700' },
+    formatter: fmtFn,
+});
+
+// Semanas cerradas: S1 16/3–22/3 · S2 23/3–29/3 · S3 30/3–5/4
+const labels = ['Sem 1  16/3–22/3', 'Sem 2  23/3–29/3', 'Sem 3  30/3–5/4'];
+
+const printsBP26 = [33.45, 63.39, 63.66];
+const printsBP25 = [39.81, 30.36, 29.21];
+const printsLM   = [31.28, 46.18, 45.12];
+
+const ordersBP26 = [229960, 240977, 237874];
+const ordersBP25 = [230172, 198748, 207574];
+const ordersLM   = [229738, 234837, 238636];
+
+const scaleDefaults = (yFmt) => ({
+    x: {
+        ticks: { color: '#aaa', font: { size: 9 }, maxRotation: 0 },
+        grid: { color: '#f0f1f7' }
+    },
+    y: {
+        ticks: { color: '#aaa', font: { size: 9 }, callback: yFmt },
+        grid: { color: '#f0f1f7' }
+    }
+});
+
+const tooltipDefaults = (fmtFn) => ({
+    mode: 'index',
+    intersect: false,
+    backgroundColor: '#fff',
+    borderColor: '#e2e4ef',
+    borderWidth: 1,
+    titleColor: '#666',
+    bodyColor: '#333',
+    callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmtFn(ctx.raw)}` }
+});
+
+// Prints chart
+new Chart(document.getElementById('chartPrints'), {
+    type: 'bar',
+    data: {
+        labels,
+        datasets: [
+            { label: 'BP 2026', data: printsBP26, backgroundColor: 'rgba(245,200,0,0.85)',  borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtPrints), color: '#9a7a00' } },
+            { label: 'LM',      data: printsLM,   backgroundColor: 'rgba(79,106,245,0.45)', borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtPrints), color: '#7080cc' } },
+            { label: 'BP 2025', data: printsBP25, backgroundColor: 'rgba(180,180,190,0.5)', borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtPrints), color: '#aaa' } }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 16 } },
+        plugins: { legend: { display: false }, tooltip: tooltipDefaults(v => v.toFixed(1).replace('.', ',') + 'M'), datalabels: {} },
+        scales: scaleDefaults(v => v + 'M'),
+        animation: { duration: 500 }
+    }
+});
+
+// Orders chart
+new Chart(document.getElementById('chartOrders'), {
+    type: 'bar',
+    data: {
+        labels,
+        datasets: [
+            { label: 'BP 2026', data: ordersBP26, backgroundColor: 'rgba(245,200,0,0.85)',  borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtOrders), color: '#9a7a00' } },
+            { label: 'LM',      data: ordersLM,   backgroundColor: 'rgba(79,106,245,0.45)', borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtOrders), color: '#7080cc' } },
+            { label: 'BP 2025', data: ordersBP25, backgroundColor: 'rgba(180,180,190,0.5)', borderWidth: 0, borderRadius: 2, datalabels: { ...datalabelsBase(fmtOrders), color: '#aaa' } }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 16 } },
+        plugins: { legend: { display: false }, tooltip: tooltipDefaults(v => v.toLocaleString('es-AR')), datalabels: {} },
+        scales: scaleDefaults(v => (v / 1000).toFixed(0) + 'K'),
+        animation: { duration: 500 }
+    }
+});
+</script>
+
+</body>
+</html>
